@@ -45,7 +45,9 @@ const firstScan = (puzzleArr, words) => {
     let finalPuzzle = puzzleArr
 
     for (let i = 0; i < puzzleArr.length; i++) {
+        console.log(`Checking row: ${i}`)
         for (let j = 0; j < puzzleArr.length; j++) {
+            console.log(`Checking column: ${j}`)
             if (puzzleArr[i][j] == 2 || puzzleArr[i][j] == 1 ) {
 
                 // Count distance
@@ -77,7 +79,7 @@ const firstScan = (puzzleArr, words) => {
 
                 if (wordToAdd == "") {
                     console.log("No words were available to complete this row/column")
-                    return
+                    break
                 }
 
                 words.splice(indexToRemove, 1)
@@ -91,10 +93,11 @@ const firstScan = (puzzleArr, words) => {
 
                 finalPuzzle = wordAdder(finalPuzzle, indexY, indexZ, wordToAdd)
                 console.log(`finalPuzzle after the wordAdder ${finalPuzzle}`)
-                return finalPuzzle
             }
         }
     }
+    console.log(`Finalpuzzle before return:${finalPuzzle}`)
+    return finalPuzzle
 }
 
 const crosswordSolver = (emptyPuzzle, words) => {
