@@ -10,4 +10,4 @@ const words = ['casa', 'alan', 'ciao', 'anta']
 
 console.log(crosswordSolver(emptyPuzzle, words))
 
-console.log(wordSplitter((words)))
+console.log(wordSplitter(words))
