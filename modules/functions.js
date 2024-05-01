@@ -19,93 +19,90 @@ const puzzleSplitter = (values) => {
     return arrWords; // Returns a 2D array of the puzzle
 }
 
-const wordAdder = (finalPuzzle, puzzleIndexRow, puzzleIndexColumn, word) => {
+const wordAdder = (finalPuzzle, puzzleIndexRow, puzzleIndexColumn, word, isVertical = false) => {
+    const wordToAddArray = word.split('');
+    const solvedPuzzle = finalPuzzle.map(row => [...row]);
 
-    wordToAddArray = word.split('')
-    console.log(`wordToAdd splitted: ${wordToAddArray}`)
-    solvedPuzzle = [...finalPuzzle]
-    console.log(solvedPuzzle)
-    let targetRow = [...finalPuzzle[puzzleIndexRow]]
-    console.log(`targetRow = ${targetRow} `)
-
-    for (let i = 0; i < finalPuzzle[puzzleIndexRow].length; i++) {
-        targetRow[puzzleIndexColumn + i] = wordToAddArray[i]
-        console.log(`Addition loop ${i}, targetRow = ${targetRow}`)
+    if (isVertical) {
+        for (let i = 0; i < word.length; i++) {
+            solvedPuzzle[puzzleIndexRow + i][puzzleIndexColumn] = wordToAddArray[i];
+        }
+    } else {
+        for (let i = 0; i < word.length; i++) {
+            solvedPuzzle[puzzleIndexRow][puzzleIndexColumn + i] = wordToAddArray[i];
+        }
     }
 
-    console.log(`targetRow vale after loop ${targetRow}`)
-    console.log(`solvedPuzzle[puzzleIndexRow] = ${solvedPuzzle[puzzleIndexRow]}`)
-    solvedPuzzle[puzzleIndexRow] = targetRow
-    console.log(`solvedPuzzle after addition = ${solvedPuzzle}`)
-    return solvedPuzzle
-}
+    return solvedPuzzle;
+};
 
 const firstScan = (puzzleArr, words) => {
-    wordList = words
-    let finalPuzzle = puzzleArr
+    let finalPuzzle = puzzleArr;
+    let wordList = words.slice();
 
     for (let i = 0; i < puzzleArr.length; i++) {
-        console.log(`Checking row: ${i}`)
-        for (let j = 0; j < puzzleArr.length; j++) {
-            console.log(`Checking column: ${j}`)
-            if (puzzleArr[i][j] == 2 || puzzleArr[i][j] == 1 ) {
-
-                // Count distance
-                distanceRow = 0
-                // distanceColumn = 0
-
-                // Row distance
-                for (let k = j; k < puzzleArr.length; k++) {
-                    if (puzzleArr[i][k] != 1 || puzzleArr[i][k] != 2) {
-                        distanceRow++
-                    } else if (puzzleArr[i][k] == 1 || puzzleArr[i][k] == "." || puzzleArr[i][k] == 2) {
-                        break
+        for (let j = 0; j < puzzleArr[i].length; j++) {
+            if (puzzleArr[i][j] == 2 || puzzleArr[i][j] == 1) {
+                // Check row-wise word placement
+                let distanceRow = 0;
+                for (let k = j; k < puzzleArr[i].length; k++) {
+                    if (puzzleArr[i][k] == '.' || !isNaN(puzzleArr[i][k])) {
+                        distanceRow++;
+                    } else {
+                        break;
                     }
                 }
 
-                console.log(`Current row distance: ${distanceRow}`)
-
-                // Get word
-                let wordToAdd = ""
-                let indexToRemove = 0
-
-                for (let m = 0; m < words.length; m++) {
-                    if ( words[m].length == distanceRow) {
-                        wordToAdd = words[m]
-                        indexToRemove = words.indexOf(words[m])
-                        break
+                let wordToAddRow = "";
+                let indexToRemoveRow = -1;
+                for (let m = 0; m < wordList.length; m++) {
+                    if (wordList[m].length == distanceRow) {
+                        wordToAddRow = wordList[m];
+                        indexToRemoveRow = m;
+                        break;
                     }
                 }
 
-                if (wordToAdd == "") {
-                    console.log("No words were available to complete this row/column")
-                    break
+                if (wordToAddRow !== "") {
+                    finalPuzzle = wordAdder(finalPuzzle, i, j, wordToAddRow);
+                    wordList.splice(indexToRemoveRow, 1);
                 }
 
-                words.splice(indexToRemove, 1)
+                // Check column-wise word placement
+                let distanceColumn = 0;
+                for (let k = i; k < puzzleArr.length; k++) {
+                    if (puzzleArr[k][j] == '.' || !isNaN(puzzleArr[k][j])) {
+                        distanceColumn++;
+                    } else {
+                        break;
+                    }
+                }
 
-                let indexY = i 
-                let indexZ = j
+                let wordToAddColumn = "";
+                let indexToRemoveColumn = -1;
+                for (let m = 0; m < wordList.length; m++) {
+                    if (wordList[m].length == distanceColumn) {
+                        wordToAddColumn = wordList[m];
+                        indexToRemoveColumn = m;
+                        break;
+                    }
+                }
 
-                console.log(`Indexes: Y: ${indexY}, X: ${indexZ}`)
-                console.log(`wordToAdd value: ${wordToAdd}`)
-
-
-                finalPuzzle = wordAdder(finalPuzzle, indexY, indexZ, wordToAdd)
-                console.log(`finalPuzzle after the wordAdder ${finalPuzzle}`)
+                if (wordToAddColumn !== "") {
+                    finalPuzzle = wordAdder(finalPuzzle, i, j, wordToAddColumn, true);
+                    wordList.splice(indexToRemoveColumn, 1);
+                }
             }
         }
     }
-    console.log(`Finalpuzzle before return:${finalPuzzle}`)
-    return finalPuzzle
-}
+
+    return finalPuzzle;
+};
 
 const crosswordSolver = (emptyPuzzle, words) => {
     let crosswordSplitted = puzzleSplitter(emptyPuzzle);
-
     let solvedPuzzle = firstScan(crosswordSplitted, words);
-    console.log(solvedPuzzle)
-    return solvedPuzzle;
-}
+    return solvedPuzzle.map(row => row.join('')).join('\n');
+};
 
 module.exports = {wordSplitter, puzzleSplitter, crosswordSolver}
