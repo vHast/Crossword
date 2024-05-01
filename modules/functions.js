@@ -22,26 +22,30 @@ const puzzleSplitter = (values) => {
 const wordAdder = (finalPuzzle, puzzleIndexRow, puzzleIndexColumn, word) => {
 
     wordToAddArray = word.split('')
-    solvedPuzzle = finalPuzzle
+    console.log(`wordToAdd splitted: ${wordToAddArray}`)
+    solvedPuzzle = [...finalPuzzle]
+    console.log(solvedPuzzle)
     let targetRow = finalPuzzle[puzzleIndexRow]
+    console.log(`targetRow = ${targetRow} `)
 
     for (let i = 0; i < finalPuzzle[puzzleIndexRow].length; i++) {
         targetRow[puzzleIndexColumn + i] = wordToAddArray[i]
+        console.log(`Addition loop ${i}, targetRow = ${targetRow}`)
     }
 
+    console.log(`targetRow vale after loop ${targetRow}`)
+    console.log(`solvedPuzzle[puzzleIndexRow] = ${solvedPuzzle[puzzleIndexRow]}`)
     solvedPuzzle[puzzleIndexRow] = targetRow
-
+    console.log(`solvedPuzzle after addition = ${solvedPuzzle}`)
     return solvedPuzzle
-
-
 }
 
 const firstScan = (puzzleArr, words) => {
     wordList = words
     let finalPuzzle = puzzleArr
 
-    for (i = 0; i < puzzleArr.length; i++) {
-        for (j = 0; j < puzzleArr.length; j++) {
+    for (let i = 0; i < puzzleArr.length; i++) {
+        for (let j = 0; j < puzzleArr.length; j++) {
             if (puzzleArr[i][j] == 2 || puzzleArr[i][j] == 1 ) {
 
                 // Count distance
@@ -49,13 +53,15 @@ const firstScan = (puzzleArr, words) => {
                 // distanceColumn = 0
 
                 // Row distance
-                for (k = j; k < puzzleArr.length; k++) {
+                for (let k = j; k < puzzleArr.length; k++) {
                     if (puzzleArr[i][k] != 1 || puzzleArr[i][k] != 2) {
                         distanceRow++
                     } else if (puzzleArr[i][k] == 1 || puzzleArr[i][k] == "." || puzzleArr[i][k] == 2) {
                         break
                     }
                 }
+
+                console.log(`Current row distance: ${distanceRow}`)
 
                 // Get word
                 let wordToAdd = ""
@@ -76,11 +82,19 @@ const firstScan = (puzzleArr, words) => {
 
                 words.splice(indexToRemove, 1)
 
-                let indexY, indexZ = i, j
+                let indexY = i 
+                let indexZ = j
+
+                console.log(`Indexes: Y: ${indexY}, X: ${indexZ}`)
+                console.log(`wordToAdd value: ${wordToAdd}`)
+
 
                 finalPuzzle = wordAdder(finalPuzzle, indexY, indexZ, wordToAdd)
 
                 puzzleArr[i][j]--
+
+                return finalPuzzle
+
             }
         }
     }
