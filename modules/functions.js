@@ -25,7 +25,7 @@ const wordAdder = (finalPuzzle, puzzleIndexRow, puzzleIndexColumn, word) => {
     console.log(`wordToAdd splitted: ${wordToAddArray}`)
     solvedPuzzle = [...finalPuzzle]
     console.log(solvedPuzzle)
-    let targetRow = finalPuzzle[puzzleIndexRow]
+    let targetRow = [...finalPuzzle[puzzleIndexRow]]
     console.log(`targetRow = ${targetRow} `)
 
     for (let i = 0; i < finalPuzzle[puzzleIndexRow].length; i++) {
@@ -90,11 +90,8 @@ const firstScan = (puzzleArr, words) => {
 
 
                 finalPuzzle = wordAdder(finalPuzzle, indexY, indexZ, wordToAdd)
-
-                puzzleArr[i][j]--
-
+                console.log(`finalPuzzle after the wordAdder ${finalPuzzle}`)
                 return finalPuzzle
-
             }
         }
     }
@@ -104,7 +101,7 @@ const crosswordSolver = (emptyPuzzle, words) => {
     let crosswordSplitted = puzzleSplitter(emptyPuzzle);
 
     let solvedPuzzle = firstScan(crosswordSplitted, words);
-    
+    console.log(solvedPuzzle)
     return solvedPuzzle;
 }
 

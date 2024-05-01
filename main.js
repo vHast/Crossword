@@ -9,7 +9,3 @@ const emptyPuzzle = `2001
 const words = ['casa', 'alan', 'ciao', 'anta']
 
 console.log(crosswordSolver(emptyPuzzle, words))
-
-puzzle = wordSplitter(words)
-
-console.log(`Puzzle result: ${puzzle}`)
